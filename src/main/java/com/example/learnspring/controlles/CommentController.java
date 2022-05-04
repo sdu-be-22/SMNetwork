@@ -20,10 +20,16 @@ import java.util.Optional;
 public class CommentController {
 
     @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
     private PostRepository postRepository;
+
+
+
+    public CommentController(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
 
 
     @GetMapping("/blog/{id}/comments")
@@ -39,7 +45,7 @@ public class CommentController {
     public String createComment(@PathVariable (value = "id") Long postId, @RequestParam String text, Model model) {
         Optional<Post> post = postRepository.findById(postId);
         ArrayList<Post> res = new ArrayList<>();
-        post.ifPresent(res::add);
+        post.ifPresent(res :: add);
         Post post1 = res.get(0);
         Comment comment = new Comment(text);
         comment.setPost(post1);
@@ -59,10 +65,8 @@ public class CommentController {
 //        return "blog-edit";
 
         Optional<Comment> comment = commentRepository.findById(commentId);
-        ArrayList<Comment> com = new ArrayList<>();
-        comment.ifPresent(com::add);
-        Comment myCom = com.get(0);
-        model.addAttribute("comment",  com);
+        Comment myCom = comment.get();
+        model.addAttribute("comment",  comment);
 
         return "blog-details";
 
