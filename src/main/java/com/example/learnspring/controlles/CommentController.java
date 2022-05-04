@@ -51,7 +51,7 @@ public class CommentController {
         comment.setPost(comPost);
         comPost.getComments().add(comment);
         commentRepository.save(comment);
-        return "comment-success";
+        return "redirect:/blog";
     }
 
     @GetMapping("/blog/{id}/comments/edit")

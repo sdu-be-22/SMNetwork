@@ -1,13 +1,18 @@
 package com.example.learnspring.models;
 
+import com.example.learnspring.repo.UserRepository;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.*;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 public class Post extends AuditModel{
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,8 +30,9 @@ public class Post extends AuditModel{
     @JoinColumn(name = "user_id")
     private User author;
 
+
     public String getAuthorName(){
-        return author != null ? "Posted by: " + author.getFirst_name()+" "+author.getLast_name() : "none";
+        return author != null ? "Posted by: " + author.getFirst_name() + " " + author.getLast_name() : "none";
     }
 
     public Set<Comment> getComments() {
@@ -48,7 +54,6 @@ public class Post extends AuditModel{
     public String getTitle() {
         return title;
     }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -91,5 +96,12 @@ public class Post extends AuditModel{
         this.title = title;
         this.anons = anons;
         this.full_text = full_text;
+    }
+
+    public User getUser() {
+        return author;
+    }
+    public void setUser(User user) {
+        author = user;
     }
 }

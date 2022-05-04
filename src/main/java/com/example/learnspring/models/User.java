@@ -1,7 +1,10 @@
 package com.example.learnspring.models;
 
+import com.example.learnspring.repo.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
-import java.awt.*;
+import java.util.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,10 +23,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Status status;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "post")
-    private Set<Post> post = new HashSet<>();
+    @ManyToOne
+    Post post;
 
     public User(Long id, String email, String first_name, String last_name, String password, Role role, Status status) {
         this.id = id;
@@ -91,4 +92,9 @@ public class User {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
 }
