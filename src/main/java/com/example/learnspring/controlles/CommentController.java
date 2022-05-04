@@ -7,6 +7,7 @@ import com.example.learnspring.repo.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,39 +45,31 @@ public class CommentController {
     @PostMapping("/blog/{id}/comments")
     public String createComment(@PathVariable (value = "id") Long postId, @RequestParam String text, Model model) {
         Optional<Post> post = postRepository.findById(postId);
-        ArrayList<Post> res = new ArrayList<>();
-        post.ifPresent(res :: add);
-        Post post1 = res.get(0);
+        Post comPost = new Post();
+        if(post.isPresent()) comPost = post.get();
         Comment comment = new Comment(text);
-        comment.setPost(post1);
-        post1.getComments().add(comment);
+        comment.setPost(comPost);
+        comPost.getComments().add(comment);
         commentRepository.save(comment);
-        return "blog-details";
+        return "comment-success";
     }
 
-    @PostMapping("/blog/{id}/comments/{commentId}")
-    public String updateComment(@PathVariable (value = "id") Long postId,
-                                 @PathVariable (value = "commentId") Long commentId,
-                                 Model model) {
-//        Optional<Post> post = postRepository.findById(id);
-//        ArrayList<Post> res = new ArrayList<>();
-//        post.ifPresent(res::add);
-//        model.addAttribute("post", res);
-//        return "blog-edit";
-
-        Optional<Comment> comment = commentRepository.findById(commentId);
-        Comment myCom = comment.get();
-        model.addAttribute("comment",  comment);
-
-        return "blog-details";
-
-//        if(!postRepository.existsById(postId)) {
-//            throw new ResourceNotFoundException("PostId " + postId + " not found");
-//        }
-//
-//        return commentRepository.findById(commentId).map(comment -> {
-//            comment.setText(commentRequest.getText());
-//            return commentRepository.save(comment);
-//        }).orElseThrow(() -> new ResourceNotFoundException("CommentId " + commentId + "not found"));
+    @GetMapping("/blog/{id}/comments/edit")
+    @PreAuthorize("hasAuthority('developers:read')")
+    public String commentEdit(@PathVariable(value = "id") long id, Model model){
+        if(!commentRepository.existsById(id)) return "redirect:/blog";
+        Optional<Comment> comment = commentRepository.findById(id);
+        ArrayList<Comment> res = new ArrayList<>();
+        comment.ifPresent(res::add);
+        model.addAttribute("comment", res);
+        return "comment-edit";
+    }
+    @PostMapping("/blog/{id}/comments/edit")
+    @PreAuthorize("hasAuthority('developers:read')")
+    public String commentUpdate(@PathVariable(value = "id") long id, @RequestParam String text, Model model){
+        Comment comment = commentRepository.findById(id).orElseThrow();
+        comment.setText(text);
+        commentRepository.save(comment);
+        return "redirect:/blog";
     }
 }

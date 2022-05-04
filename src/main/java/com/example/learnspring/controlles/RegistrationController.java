@@ -19,7 +19,6 @@ public class RegistrationController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-
         return "registration";
     }
     @PostMapping("/process_register")

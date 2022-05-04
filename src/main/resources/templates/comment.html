@@ -12,6 +12,7 @@
     <div th:each ="el: ${comment}" class="alert alert-info mt-2 bg-secondary">
         <h3 th:text="${el.getText()}"/>
         <p th:text="${el.getCreatedAt()}" />
+        <a th:href="'/blog/' + ${el.getId()} + '/comments/edit'" style="float: right">EDIT</a>
     </div>
 </div>
 </body>

@@ -3,8 +3,6 @@ package com.example.learnspring.models;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
